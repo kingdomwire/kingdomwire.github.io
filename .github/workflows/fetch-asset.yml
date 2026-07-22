@@ -1,0 +1,29 @@
+name: Fetch asset into repo
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Public URL of the file to download'
+        required: true
+      path:
+        description: 'Destination path in the repo (e.g. og/photo.png)'
+        required: true
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download file
+        run: |
+          mkdir -p "$(dirname "${{ inputs.path }}")"
+          curl -fSL "${{ inputs.url }}" -o "${{ inputs.path }}"
+          ls -la "${{ inputs.path }}"
+      - name: Commit and push
+        run: |
+          git config user.name "kw-bot"
+          git config user.email "kenana.dahlan@gmail.com"
+          git add "${{ inputs.path }}"
+          git commit -m "Add asset: ${{ inputs.path }}" || echo "no change"
+          git push
