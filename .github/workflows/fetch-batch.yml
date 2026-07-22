@@ -24,8 +24,8 @@ jobs:
           done
       - name: Commit and push
         run: |
-          git config user.name "kw-bot"
-          git config user.email "kenana.dahlan@gmail.com"
+          git config user.name "KingdomWire"
+          git config user.email "info@kingdomwire.net"
           git add -A
           git commit -m "Fetch asset batch" || echo "no change"
           git push

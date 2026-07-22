@@ -22,8 +22,8 @@ jobs:
           ls -la "${{ inputs.path }}"
       - name: Commit and push
         run: |
-          git config user.name "kw-bot"
-          git config user.email "kenana.dahlan@gmail.com"
+          git config user.name "KingdomWire"
+          git config user.email "info@kingdomwire.net"
           git add "${{ inputs.path }}"
           git commit -m "Add asset: ${{ inputs.path }}" || echo "no change"
           git push
