@@ -1,0 +1,31 @@
+name: Fetch asset batch
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: 'JSON array of {url, path}'
+        required: true
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      MANIFEST: ${{ inputs.manifest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download files
+        run: |
+          echo "$MANIFEST" | jq -c '.[]' | while read -r item; do
+            url=$(echo "$item" | jq -r '.url')
+            path=$(echo "$item" | jq -r '.path')
+            mkdir -p "$(dirname "$path")"
+            curl -fSL --retry 2 "$url" -o "$path" || echo "FAILED: $path"
+          done
+      - name: Commit and push
+        run: |
+          git config user.name "kw-bot"
+          git config user.email "kenana.dahlan@gmail.com"
+          git add -A
+          git commit -m "Fetch asset batch" || echo "no change"
+          git push
